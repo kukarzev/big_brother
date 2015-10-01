@@ -19,8 +19,8 @@ if __name__ == '__main__':
     import numpy as np
 
     # read test data
-    [XX,yy] = r.read_images(args.training, sz=(70,70))
-    yy = np.asarray(yy, dtype=np.int32)
+    [XX,yy], names = r.read_images(args.training, sz=(70,70))
+    yy = np.asarray(yy, dtype=np.int)
     model = cv2.face.createFisherFaceRecognizer()
     print('About to train the recognizer, the available labels:',np.asarray(yy))
     model.train(np.asarray(XX), np.asarray(yy))
@@ -48,17 +48,17 @@ if __name__ == '__main__':
         for i,(x, y, w, h) in enumerate(faces):
             cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 2)
             
+            # get the face
+            _face = gray[y:y+h, x:x+h]
+
             if eyeCascade is not None:
-                roi_gray = gray[y:y+h, x:x+h]
                 eyes = eyeCascade.detectMultiScale(
-                    roi_gray, scaleFactor=1.3, minNeighbors=5,
+                    _face, scaleFactor=1.3, minNeighbors=5,
                     minSize=(w//5,h//5))
                 for (ex,ey,ew,eh) in eyes:
                     cv2.rectangle(frame, (x+ex,y+ey),(x+ex+ew,y+ey+eh),
                                   (255,0,0), 2)
 
-            # get the face
-            _face = gray[y:y+h, x:x+h]
 
             # resize face
             _width = 70
@@ -71,7 +71,9 @@ if __name__ == '__main__':
             # add some text
             pos_x = max(x-10,0)
             pos_y = max(y-10,0)
-            cv2.putText(frame,'Prediction: {}'.format(_prediction), (pos_x,pos_y), cv2.FONT_HERSHEY_PLAIN,1,(0,255,0), 2)
+            cv2.putText(frame,'Prediction: {} {}'.format(
+                names[_prediction[0]],_prediction), 
+                        (pos_x,pos_y), cv2.FONT_HERSHEY_PLAIN,1,(0,255,0), 2)
 
         cv2.imshow('webcam', frame)
 

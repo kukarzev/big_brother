@@ -67,6 +67,7 @@ def read_images(path, sz=None):
     """
     c = 0
     X,y = [], []
+    namemap = {}
     for dirname, dirnames, filenames in os.walk(path):
         for subdirname in dirnames:
             subject_path = os.path.join(dirname, subdirname)
@@ -78,13 +79,14 @@ def read_images(path, sz=None):
                         im = cv2.resize(im, sz)
                     X.append(np.asarray(im, dtype=np.uint8))
                     y.append(c)
+                    namemap[c] = subdirname
                 except IOError(errno, strerror):
                     print("I/O error({0}): {1}".format(errno, strerror))
                 except:
                     print("Unexpected error:", sys.exc_info()[0])
                     raise
             c = c+1
-    return [X,y]
+    return [X,y], namemap
 
 if __name__ == "__main__":
     # This is where we write the images, if an output_dir is given
