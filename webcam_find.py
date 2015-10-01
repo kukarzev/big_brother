@@ -1,4 +1,4 @@
-# python webcam_find.py --face ../opencv/data/haarcascades/haarcascade_frontalface_default.xml --training orl_faces 0
+# python webcam_find.py --training orl_faces 0
 
 
 
@@ -6,12 +6,14 @@ if __name__ == '__main__':
 
     import argparse
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--face', required=True,
+    arg_parser.add_argument('--face',
+                            default='haarcascade_frontalface_default.xml',
                             help='classifier desciption file')
     arg_parser.add_argument('--eyes', help='classifier for eyes')
     arg_parser.add_argument('device', default=0, type=int,
                             help='which video device to use')
-    arg_parser.add_argument('--training', help='images for training')
+    arg_parser.add_argument('--training', help='images for training',
+                            required=True)
     args = arg_parser.parse_args()
 
     import cv2
