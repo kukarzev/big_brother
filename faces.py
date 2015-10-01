@@ -94,7 +94,7 @@ if __name__ == "__main__":
     # the tutorial coming with this source code on how to prepare
     # your image data:
     if len(sys.argv) < 2:
-        print("USAGE: facerec_demo.py </path/to/images> [</path/to/store/images/at>]")
+        print("USAGE: faces.py </path/to/images> [</path/to/store/images/at>]")
         sys.exit()
     # Now read in the image data. This must be a valid path!
     [X,y] = read_images(sys.argv[1])
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # Create the Eigenfaces model. We are going to use the default
     # parameters for this simple example, please read the documentation
     # for thresholding:
-    model = cv2.createFisherFaceRecognizer()
+    model = cv2.face.createFisherFaceRecognizer()
     # Read
     # Learn the model. Remember our function returns Python lists,
     # so we use np.asarray to turn them into NumPy lists to make
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     #
     # model.predict is going to return the predicted label and
     # the associated confidence:
-    [p_label, p_confidence] = model.predict(np.asarray(X[0]))
+    [p_label, p_confidence] = model.predict(np.asarray(X[1]))
     # Print it:
     print("Predicted label = %d (confidence=%.2f)" % (p_label, p_confidence))
     # Cool! Finally we'll plot the Eigenfaces, because that's 
@@ -141,10 +141,11 @@ if __name__ == "__main__":
     # data, because the cv::FaceRecognizer is a cv::Algorithm.
     #
     # You can see the available parameters with getParams():
-    print(model.getParams())
+    ## GENA ## print(model.getParams())
     # Now let's get some data:
-    mean = model.getMat("mean")
-    eigenvectors = model.getMat("eigenvectors")
+    #mean = model.getMat("mean")
+    mean = model.getMean()
+    eigenvectors = model.getEigenVectors()
     cv2.imwrite("test.png", X[0])
     # We'll save the mean, by first normalizing it:
     mean_norm = normalize(mean, 0, 255, dtype=np.uint8)
