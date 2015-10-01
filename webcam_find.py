@@ -12,20 +12,22 @@ if __name__ == '__main__':
     import cv2
 
     faceCascade = cv2.CascadeClassifier(args.face)
-    webcam = cv2.VideoCapture(1)
+    webcam = cv2.VideoCapture(args.device)
 
     if args.eyes:
         eyeCascade = cv2.CascadeClassifier(args.eyes)
     else:
         eyeCascade = None
 
-    while True:
+    go=True
+    while go:
 
         ret, frame = webcam.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         faces = faceCascade.detectMultiScale(
-            gray, scaleFactor=1.3, minNeighbors=5)
+            gray, scaleFactor=1.3, minNeighbors=5,
+            minSize=(frame.shape[1]//10,frame.shape[0]//10))
 
 
         for (x, y, w, h) in faces:
@@ -33,7 +35,9 @@ if __name__ == '__main__':
 
             if eyeCascade is not None:
                 roi_gray = gray[y:y+h, x:x+h]
-                eyes = eyeCascade.detectMultiScale(roi_gray)
+                eyes = eyeCascade.detectMultiScale(
+                    roi_gray, scaleFactor=1.3, minNeighbors=5,
+                    minSize=(w//5,h//5))
                 for (ex,ey,ew,eh) in eyes:
                     cv2.rectangle(frame, (x+ex,y+ey),(x+ex+ew,y+ey+eh),
                                   (255,0,0), 2)
@@ -43,6 +47,8 @@ if __name__ == '__main__':
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+        # go=False
 
     webcam.release()
     cv2.destroyAllWindows()
