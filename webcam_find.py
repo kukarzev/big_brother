@@ -14,11 +14,20 @@ if __name__ == '__main__':
                             help='which video device to use')
     arg_parser.add_argument('--training', help='images for training',
                             required=True)
+    # for motion detection
+    arg_parser.add_argument("-v", "--video", help="path to the video file")
+    arg_parser.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+
     args = arg_parser.parse_args()
+    
+       
+    # initialize the first frame in the video stream
+    firstFrame = None
 
     import cv2
     import recognition as r
     import numpy as np
+    import time
 
     # read test data
     [XX,yy], names = r.read_images(args.training, sz=(70,70))
@@ -29,18 +38,37 @@ if __name__ == '__main__':
     print('Recognize trained...')
 
     faceCascade = cv2.CascadeClassifier(args.face)
-    webcam = cv2.VideoCapture(args.device)
+    #webcam = cv2.VideoCapture(args.device)
 
     if args.eyes:
         eyeCascade = cv2.CascadeClassifier(args.eyes)
     else:
         eyeCascade = None
 
+    # if the video argument is not None, then we are reading from a video file
+    if args.video:
+        webcam = cv2.VideoCapture(args.video)
+    # otherwise, we are reading from webcam
+    else:
+        webcam = cv2.VideoCapture(args.device)
+        time.sleep(0.25)
+
     go=True
     while go:
 
         ret, frame = webcam.read()
+
+        # motion detection piece
+        text = 'Unoccupied'
+        if not ret:
+            break # reached the end of video
+
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        _blurred_gray = cv2.GaussianBlur(gray, (21, 21), 0)
+
+        if firstFrame is None:
+            firstFrame = _blurred_gray
+            continue
 
         faces = faceCascade.detectMultiScale(
             gray, scaleFactor=1.3, minNeighbors=5,

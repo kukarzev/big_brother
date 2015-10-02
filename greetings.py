@@ -26,8 +26,8 @@ class Greetings:
 
 
 
-    def Say(self, text):
+    def Say(self, text, lang='en'):
         tts = gTTS(text=text,
-                   lang='en')
+                   lang=lang)
         tts.save('./tts.mp3')
         os.system("mpg321 tts.mp3 -quiet")

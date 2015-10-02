@@ -1,3 +1,6 @@
+# python capture_training.py --name Gena --training faces/ --N 20 0
+
+
 if __name__=='__main__':
     import argparse
     arg_parser = argparse.ArgumentParser()
@@ -6,7 +9,7 @@ if __name__=='__main__':
                             default='haarcascade_frontalface_default.xml',
                             help='classifier desciption file')
     arg_parser.add_argument('--training', help='images for training')
-    arg_parser.add_arcument('--N', default=10, type=int, 
+    arg_parser.add_argument('--N', default=10, type=int, 
                             help='number of images to capture before complete')
     arg_parser.add_argument('device', default=0, type=int,
                             help='which video device to use')
