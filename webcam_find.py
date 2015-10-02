@@ -33,7 +33,7 @@ if __name__ == '__main__':
     [XX,yy], names = r.read_images(args.training, sz=(70,70))
     yy = np.asarray(yy, dtype=np.int)
     model = cv2.face.createFisherFaceRecognizer()
-    print('About to train the recognizer, the available labels:',np.asarray(yy))
+    print('About to train the recognizer, the available labels:',names)
     model.train(np.asarray(XX), np.asarray(yy))
     print('Recognize trained...')
 
@@ -54,6 +54,9 @@ if __name__ == '__main__':
         time.sleep(0.25)
 
     go=True
+
+    face_history = {}
+    history_size = 30
     while go:
 
         ret, frame = webcam.read()
@@ -98,12 +101,28 @@ if __name__ == '__main__':
             # predict
             _prediction = model.predict(_face_resized)
 
+            hist = face_history.get(i, np.zeros(history_size, dtype=np.int64))
+            hist = np.concatenate((hist[1:], np.array([_prediction[0]])))
+            face_history[i] = hist
+
+            try:
+                counts = np.bincount(hist)
+                maxBin = np.argmax(counts)
+            except:
+                print(hist)
+                maxBin = None
+
+            if maxBin and (counts[maxBin] >= history_size*0.5):
+                _label = names[maxBin]
+            else:
+                _label = 'Stranger'
+
             # add some text
             pos_x = max(x-10,0)
             pos_y = max(y-10,0)
-            cv2.putText(frame,'Prediction: {} {}'.format(
-                names[_prediction[0]],_prediction), 
-                        (pos_x,pos_y), cv2.FONT_HERSHEY_PLAIN,1,(0,255,0), 2)
+            cv2.putText(frame, '{} {}'.format(_label, _prediction),
+                        (pos_x,pos_y), cv2.FONT_HERSHEY_PLAIN,1,(0,255,0),
+                        2)
 
         cv2.imshow('webcam', frame)
 

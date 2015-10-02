@@ -65,7 +65,7 @@ def read_images(path, sz=None):
             X: The images, which is a Python list of numpy arrays.
             y: The corresponding labels (the unique number of the subject, person) in a Python list.
     """
-    c = 0
+    c = 1
     X,y = [], []
     namemap = {}
     for dirname, dirnames, filenames in os.walk(path):
