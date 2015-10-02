@@ -18,6 +18,9 @@ if __name__ == '__main__':
     arg_parser.add_argument("-v", "--video", help="path to the video file")
     arg_parser.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
 
+    # for output
+    arg_parser.add_argument('--scale', type=float, default=1.0,
+                            help='amount to scale up image')
     args = arg_parser.parse_args()
     
        
@@ -201,7 +204,8 @@ if __name__ == '__main__':
 
         
 
-        cv2.imshow('webcam', frame)
+        cv2.imshow('webcam', cv2.resize(frame, dsize=None, 
+                                        fx=args.scale, fy=args.scale))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
