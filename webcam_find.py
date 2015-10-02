@@ -64,9 +64,10 @@ if __name__ == '__main__':
     _last_reset = _began
     _reset_reference = False
     _last_prediction_time = _began
-    _last_prediction = None
+    _last_prediction = set()
     _last_unoccupied = _began
     _last_announcement = _began-5.0
+    _last_greeted = set()
     go=True
 
     face_history = {}
@@ -127,10 +128,15 @@ if __name__ == '__main__':
         
 
         # consider saying something
-        if (_last_prediction_time < _last_unoccupied) and _last_prediction is not None and (time.time()-_last_announcement)>5.0:
+        if ((_last_prediction_time < _last_unoccupied) and
+            len(_last_prediction-_last_greeted) > 0 and 
+            (time.time()-_last_announcement)>5.0):
             _last_announcement = time.time()
-            t = threading.Thread(target=g.Say, args=('Hello, {}'.format(_last_prediction),))
+            people = ' and '.join(_last_prediction - _last_greeted)
+            t = threading.Thread(target=g.Say, args=('Hello, {}'.format(
+                people),))
             t.start()
+            _last_greeted = set(_last_prediction)
 
 
         if text=='Occupied':
@@ -138,6 +144,8 @@ if __name__ == '__main__':
                 gray, scaleFactor=1.3, minNeighbors=5,
                 minSize=(frame.shape[1]//10,frame.shape[0]//10))
 
+            if len(faces) > 0:
+                _last_prediction.clear()
 
             for i,(x, y, w, h) in enumerate(faces):
                 cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 2)
@@ -179,7 +187,7 @@ if __name__ == '__main__':
                 else:
                     _label = 'Stranger'
 
-                _last_prediction = _label
+                _last_prediction.add(_label)
                 _last_prediction_time = time.time()
 
                 # add some text
