@@ -129,7 +129,7 @@ if __name__ == '__main__':
         # consider saying something
         if (_last_prediction_time < _last_unoccupied) and _last_prediction is not None and (time.time()-_last_announcement)>5.0:
             _last_announcement = time.time()
-            t = threading.Thread(target=g.Say, args=('Hello, {}'.format(names[_last_prediction[0]]),))
+            t = threading.Thread(target=g.Say, args=('Hello, {}'.format(_last_prediction),))
             t.start()
 
 
@@ -161,8 +161,6 @@ if __name__ == '__main__':
 
                 # predict
                 _prediction = model.predict(_face_resized)
-                _last_prediction = _prediction
-                _last_prediction_time = time.time()
 
                 hist = face_history.get(i, np.zeros(history_size, dtype=np.int64))
                 hist = np.concatenate((hist[1:], np.array([_prediction[0]])))
@@ -179,6 +177,9 @@ if __name__ == '__main__':
                     _label = names[maxBin]
                 else:
                     _label = 'Stranger'
+
+                _last_prediction = _label
+                _last_prediction_time = time.time()
 
                 # add some text
                 pos_x = max(x-10,0)
