@@ -11,11 +11,12 @@ Pre-requisites
 
 Modules
 -------
-greetings.py - text-to-speech using Google TTS API
-    import greetings
-    g = greetings.Greetings()
-    g.Say("I am your father!")
+1. greetings.py - text-to-speech using Google TTS API
 
-capture_training.py - capture training images
+        import greetings
+        g = greetings.Greetings()
+        g.Say("I am your father!")
 
-webcam_find.py - main app
+2. capture_training.py - capture training images
+
+3. webcam_find.py - main app
