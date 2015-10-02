@@ -79,7 +79,7 @@ def read_images(path, sz=None):
                         im = cv2.resize(im, sz)
                     X.append(np.asarray(im, dtype=np.uint8))
                     y.append(c)
-                    namemap[c] = subdirname
+                    namemap[c] = subdirname.split('_')[0]
                 except IOError(errno, strerror):
                     print("I/O error({0}): {1}".format(errno, strerror))
                 except:

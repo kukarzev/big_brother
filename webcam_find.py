@@ -162,7 +162,8 @@ if __name__ == '__main__':
                 # predict
                 _prediction = model.predict(_face_resized)
 
-                hist = face_history.get(i, np.zeros(history_size, dtype=np.int64))
+                hist = face_history.get(i, np.zeros(history_size,
+                                                    dtype=np.int64))
                 hist = np.concatenate((hist[1:], np.array([_prediction[0]])))
                 face_history[i] = hist
                 
