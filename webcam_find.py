@@ -133,7 +133,7 @@ if __name__ == '__main__':
             (time.time()-_last_announcement)>5.0):
             _last_announcement = time.time()
             people = ' and '.join(_last_prediction - _last_greeted)
-            t = threading.Thread(target=g.Say, args=('Hello, {}'.format(
+            t = threading.Thread(target=g.Greet, args=('Hello, {}'.format(
                 people),))
             t.start()
             _last_greeted = set(_last_prediction)
