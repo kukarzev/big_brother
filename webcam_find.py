@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # read test data
     [XX,yy], names = r.read_images(args.training, sz=(70,70))
     yy = np.asarray(yy, dtype=np.int)
-    model = cv2.face.createFisherFaceRecognizer()
+    model = cv2.face.LBPHFaceRecognizer_create()#  createFisherFaceRecognizer()
     print('About to train the recognizer, the available labels:',names)
     model.train(np.asarray(XX), np.asarray(yy))
     print('Recognize trained...')
